@@ -6,7 +6,12 @@ from onxity.tools.code.executor import execute
 
 
 def test_executor_timeout():
-    res = execute([sys.executable, "-c", "import time; time.sleep(10)"], timeout=2, cpu_seconds=1, max_open_files=64)
+    res = execute(
+        [sys.executable, "-c", "import time; time.sleep(10)"],
+        timeout=2,
+        cpu_seconds=1,
+        max_open_files=64,
+    )
     assert res["timed_out"] is True
     assert res["exit_code"] is None
 
