@@ -1,13 +1,13 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "onxity"
-version = "0.1.0"
+version = "0.1.1"
 description = "Local-first, single-binary CLI agentic OS — treats the host device as its body."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [
   { name = "onxity contributors" },
@@ -30,8 +30,12 @@ prometheus = ["prometheus_client>=0.19"]
 [project.scripts]
 onxity = "onxity.cli:main"
 
-[tool.hatch.build.targets.wheel]
-packages = ["onxity"]
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["onxity*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
