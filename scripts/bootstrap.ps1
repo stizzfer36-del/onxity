@@ -13,28 +13,21 @@ if (-not (Test-Path $VenvDir)) {
 
 $Activate = Join-Path $VenvDir "Scripts/Activate.ps1"
 . $Activate
-python -m pip --disable-pip-version-check install --upgrade pip *> $null
 
 try {
   python -m pip install -e .
-  Write-Host "Installed ONIXTY with standard editable install."
+  Write-Host "Installed ONIXTY (standard path)."
 } catch {
-  Write-Host "Standard install failed; attempting offline-friendly fallback (--no-build-isolation --no-deps)..."
+  Write-Host "Standard install failed; retrying with --no-build-isolation --no-deps"
   python -m pip install -e . --no-build-isolation --no-deps
 }
 
-python - <<'PY'
-import importlib
-needed = ["click", "rich", "prompt_toolkit", "sqlalchemy", "yaml", "git", "psutil", "watchdog"]
-missing = [m for m in needed if importlib.util.find_spec(m) is None]
-if missing:
-    raise SystemExit("Missing runtime dependencies: " + ", ".join(missing) + "\nInstall manually with: python -m pip install -e .")
-print("Dependency check: ok")
-PY
+python -c "import importlib.util as u;mods=['click','rich','prompt_toolkit','sqlalchemy','yaml','git','psutil','watchdog'];missing=[m for m in mods if u.find_spec(m) is None];assert not missing, f'Missing deps: {missing}';print('Dependency check: ok')"
 
 python -m onxity.cli first-run --non-interactive
 
-Write-Host "`nBootstrap complete. Next commands:"
+Write-Host ""
+Write-Host "Done. Next commands:"
 Write-Host "  python -m onxity.cli doctor"
 Write-Host "  python -m onxity.cli daemon-start"
 Write-Host "  python -m onxity.cli daemon-status"
