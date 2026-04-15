@@ -12,12 +12,19 @@ def display_plan(plan: dict):
     t.add_column("tool")
     t.add_column("requires")
     for s in plan.get("steps", []):
-        t.add_row(s.get("id", ""), s.get("tool", ""), ",".join(s.get("requires", [])))
+        t.add_row(
+            s.get("id", ""),
+            s.get("tool", ""),
+            ",".join(s.get("requires", [])),
+        )
     console.print(t)
 
 
 def display_approval_prompt(token, details):
-    console.print(f"[yellow]Approval required[/yellow] token={token} details={details}")
+    console.print(
+        f"[yellow]Approval required[/yellow] token={token} "
+        f"details={details}"
+    )
 
 
 def display_audit_entry(entry):

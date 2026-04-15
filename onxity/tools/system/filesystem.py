@@ -6,6 +6,7 @@ from onxity.tools.registry import tool
 
 _ALLOWED_ROOTS = [Path.home()]
 
+
 def configure_allowed_roots(roots: list[str]):
     global _ALLOWED_ROOTS
     _ALLOWED_ROOTS = [Path(p).expanduser().resolve() for p in roots]
@@ -18,7 +19,11 @@ def _assert_allowed(path: str):
         raise PermissionError(f"Path outside allowed roots: {rp}")
 
 
-@tool(name="filesystem.read", description="Read a file", required_scopes=["fs:read"])
+@tool(
+    name="filesystem.read",
+    description="Read a file",
+    required_scopes=["fs:read"],
+)
 def filesystem_read(path: str) -> dict:
     _assert_allowed(path)
     p = Path(path)
@@ -26,7 +31,11 @@ def filesystem_read(path: str) -> dict:
     return {"content": content, "size": len(content)}
 
 
-@tool(name="filesystem.write", description="Write a file", required_scopes=["fs:write"])
+@tool(
+    name="filesystem.write",
+    description="Write a file",
+    required_scopes=["fs:write"],
+)
 def filesystem_write(path: str, content: str) -> dict:
     _assert_allowed(path)
     p = Path(path)
@@ -35,11 +44,17 @@ def filesystem_write(path: str, content: str) -> dict:
     return {"written": True}
 
 
-@tool(name="filesystem.find", description="Find files by pattern", required_scopes=["fs:read"])
+@tool(
+    name="filesystem.find",
+    description="Find files by pattern",
+    required_scopes=["fs:read"],
+)
 def filesystem_find(root: str, pattern: str) -> dict:
     _assert_allowed(root)
     rp = Path(root)
     matches = [str(p) for p in rp.rglob(pattern)]
     return {"matches": matches}
 
-# TODO hardening: move to strict path whitelist/chroot-like jail and deny symlink escapes.
+
+# TODO hardening: move to strict path whitelist/chroot-like jail and
+# deny symlink escapes.
