@@ -17,11 +17,16 @@ def test_absorb_dry_run_flags(tmp_config, tmp_path: Path):
         "id": "sample-plugin",
         "name": "Sample",
         "version": "0.1.0",
-        "tools": [{"name": "wifi_scan", "scopes": ["network", "hardware", "execute"]}],
+        "tools": [
+            {
+                "name": "wifi_scan",
+                "scopes": ["network", "hardware", "execute"],
+            }
+        ],
     }
     (repo / "onxity_plugin.yaml").write_text(yaml.safe_dump(manifest))
     report = absorb_plugin(tmp_config, str(repo))
     assert report["status"] == "requires_approval"
     assert "execute" in report["declared_high_risk_scopes"]
-    pats = {f['pattern'] for f in report['suspicious_imports']}
+    pats = {f["pattern"] for f in report["suspicious_imports"]}
     assert "subprocess" in pats and "scapy" in pats
