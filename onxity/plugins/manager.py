@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from onxity.packs.registry import PackRegistry
 from onxity.security.audit import AuditWriter
 
 
@@ -13,19 +14,21 @@ class PluginManager:
         self.root.mkdir(parents=True, exist_ok=True)
         self.state_file = self.root / "state.json"
         self.audit = AuditWriter(config)
+        self.pack_registry = PackRegistry(config)
         if self.state_file.exists():
-            self.state = json.loads(self.state_file.read_text())
+            self.state = json.loads(self.state_file.read_text(encoding="utf-8"))
         else:
             self.state = {"installed": {}, "enabled": {}}
 
     def _save(self):
-        self.state_file.write_text(json.dumps(self.state, indent=2))
+        self.state_file.write_text(json.dumps(self.state, indent=2), encoding="utf-8")
 
     def list_installed(self):
         return self.state["installed"]
 
     def enable(self, plugin_id):
         self.state["enabled"][plugin_id] = True
+        self.pack_registry.enable(plugin_id)
         self._save()
 
     def disable(self, plugin_id):
