@@ -1,0 +1,42 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "onxity"
+version = "0.1.0"
+description = "Local-first, single-binary CLI agentic OS — treats the host device as its body."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+  { name = "onxity contributors" },
+]
+
+dependencies = [
+  "click>=8.1",
+  "rich>=13.0",
+  "prompt_toolkit>=3.0",
+  "sqlalchemy>=2.0",
+  "pyyaml>=6.0",
+  "gitpython>=3.1",
+  "psutil>=5.9",
+  "watchdog>=3.0",
+]
+
+[project.optional-dependencies]
+prometheus = ["prometheus_client>=0.19"]
+
+[project.scripts]
+onxity = "onxity.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["onxity"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+
+[tool.flake8]
+max-line-length = 120
+exclude = [".git", "__pycache__", ".venv"]
